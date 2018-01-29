@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "saa_app",
+  "version": "0.0.1",
+  "description": "Sää App",
+  "repository": "",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
