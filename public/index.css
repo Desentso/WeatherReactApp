@@ -4,3 +4,17 @@ body, html {
 	color: #333;
 	height: 100%;
 }
+
+.Day {
+	width: calc(14% - 60px);
+	padding: 20px;
+	margin-left: 22px;
+	margin-top: 22px;
+	display: inline-block;
+	background-color: lightblue;
+	border-radius: 3px;
+}
+
+.Chart {
+
+}

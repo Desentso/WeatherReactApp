@@ -1,11 +1,18 @@
 {
-  "scripts": {
-    "start": "node server.js"
-  },
+
+  "author": "Desentso",
+
   "name": "saa_app",
   "version": "0.0.1",
   "description": "Sää App",
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Desentso/WeatherReactApp"
+  },
+
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "express": "^4.16.2"
   }
