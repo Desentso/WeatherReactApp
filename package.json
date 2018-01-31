@@ -1,7 +1,5 @@
 {
-
   "author": "Desentso",
-
   "name": "saa_app",
   "version": "0.0.1",
   "description": "Sää App",
@@ -9,11 +7,12 @@
     "type": "git",
     "url": "https://github.com/Desentso/WeatherReactApp"
   },
-
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "async": "^2.6.0",
+    "axios": "^0.17.1",
     "express": "^4.16.2"
   }
 }

@@ -3,6 +3,7 @@ body, html {
 	padding: 0;
 	color: #333;
 	height: 100%;
+	font-family: "Roboto";
 }
 
 .Day {
@@ -11,7 +12,7 @@ body, html {
 	margin-left: 22px;
 	margin-top: 22px;
 	display: inline-block;
-	background-color: lightblue;
+	background-color: #ddd;
 	border-radius: 3px;
 }
 
