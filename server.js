@@ -26,7 +26,7 @@ app.get("/forecast/:id", (req, resp) => {
 
 	const data = {};
 	const days = {};
-	axios.get("http://api.openweathermap.org/data/2.5/forecast?id=658226&appid=433d4e8a404bcfc906fd28bed3a75f60")
+	axios.get("https://api.openweathermap.org/data/2.5/forecast?id=658226&appid=433d4e8a404bcfc906fd28bed3a75f60")
 	.then(resp2 => {
 		const forecastList = resp2.data.list;
 		async.each(forecastList, (forecast, callback) => {
@@ -36,16 +36,16 @@ app.get("/forecast/:id", (req, resp) => {
 
 			if (days.hasOwnProperty(day)) {
 
-				const maxTemp = toCelsius(forecast.main.temp_max)
-				const minTemp = toCelsius(forecast.main.temp_min)
-				const temp = toCelsius(forecast.main.temp)
+				const maxTemp = toCelsius(forecast.main.temp_max);
+				const minTemp = toCelsius(forecast.main.temp_min);
+				const temp = toCelsius(forecast.main.temp);
 
 				days[day].forecast[hour] = {
-						temperature: temp, 
+						temperature: temp,
 						maxTemperature: maxTemp,
 						minTemperature: minTemp,
 						weatherDescription: forecast.weather[0].description,
-						weatherIconUrl: "http://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png"
+						weatherIconUrl: "https://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png"
 					}
 				days[day].temps = days[day].temps.concat([temp, maxTemp, minTemp]);
 			} else {
@@ -59,10 +59,8 @@ app.get("/forecast/:id", (req, resp) => {
 			async.each(Object.keys(days), (day, callback2) => {
 
 				let middle = Math.floor((Object.keys(days[day].forecast).length) / 2);
-				console.log(middle);
 				middle = Object.keys(days[day].forecast).sort((a,b)=>parseInt(a) > parseInt(b))[middle];
-				console.log(Object.keys(days[day].forecast).sort((a,b)=>parseInt(a) > parseInt(b)));
-				console.log(middle);
+
 				days[day].maxTemperature = Math.max.apply(null, days[day].temps);
 				days[day].minTemperature = Math.min.apply(null, days[day].temps);
 				days[day].temperature = days[day].forecast[middle].temperature;

@@ -7,6 +7,7 @@ class App extends React.Component {
 	}
 
 	setSelectedDay = data => {
+		console.log("clicked APP");
 		this.setState({chartData: data});
 	}
 
@@ -20,7 +21,7 @@ class App extends React.Component {
 		return (
 			<div>
 				{days}
-				<Chart data={this.state.chartData}/>
+				<ChartComponent data={this.state.chartData}/>
 			</div>
 		)
 	}
@@ -33,6 +34,7 @@ class Day extends React.Component {
 	}
 
 	handleClick = () => {
+		console.log("clicked");
 		this.props.setSelectedDay(this.props.data);
 	}
 
@@ -50,9 +52,12 @@ class Day extends React.Component {
 };
 
 
-class Chart extends React.Component {
+class ChartComponent extends React.Component {
 	constructor(props){
 		super(props);
+		this.state = {
+			forecastData: this.props.data.forecast
+		}
 	}
 
 	componentDidMount() {
@@ -60,31 +65,60 @@ class Chart extends React.Component {
     }
 
     initializeChart() {
+
+    	if (this.refs.chart === undefined){
+    		return
+    	}
         const elem = ReactDOM.findDOMNode(this.refs.chart);
         const ctx = elem.getContext("2d");
 
+        ctx.canvas.width = 500;
+		ctx.canvas.height = 250;
+
         const data = [];
         const propsData = this.props.data.forecast;
-        Object.keys(propsData).forEach((key, index) => {
+        const keys = Object.keys(propsData).sort((a,b)=>parseInt(a) > parseInt(b))
+        keys.forEach((key, index) => {
         	data.push({x: parseInt(key), y: propsData[key].temperature});
         });
 
         const config = {
         	type: "line",
-        	data: data,
-        	options: {}
+        	data: {
+	        	labels: keys,
+	        	datasets: [{
+	        		data: data,
+	        		fill: false,
+	        		borderColor: "blue",
+	        		pointRadius: 4,
+	        		pointHitRadius: 8,
+	        		pointBackgroundColor: "blue",
+	        		label: "Temperature (&deg;C)",
+	        		cubicInterpolationMode: "monotone"
+	        	}]
+        	},
+        	options: {
+        		responsive: false,
+        		scales: {
+        			yAxes: [{
+        				ticks: {
+        					stepSize: 0.5
+        				}
+        			}]
+        		}
+        	}
         };
 
-        const chart = new Chart(ctx, {type: "line", data: data});
-
-        console.log(this.refs.chart);
-        console.log(chart);
+        const chart = new Chart(ctx, config);
     }
 
 	render(){
+
+		this.initializeChart();
+
 		return (
 			<div className="Chart">
-				<canvas id="chart" ref="chart" height="250px" width="350px" />
+				<canvas ref="chart"></canvas>
 			</div>
 		)
 	}	
