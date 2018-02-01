@@ -16,6 +16,9 @@ app.use(express.static("public"));
 app.use(bodyParser.json());
 
 
+const ids = {"Helsinki": "658226", "Los Angeles": "5368361", "Tokyo": "1850147", "Dubai": "292223", "Barcelona": "3128760"};
+
+
 app.get("/", (req, resp) => {
 
 	resp.sendFile(path.join(__dirname + "/public/index.html"));
@@ -23,10 +26,12 @@ app.get("/", (req, resp) => {
 
 app.get("/forecast/:id", (req, resp) => {
 	//temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
+	
+	const id = req.params.id;
 
 	const data = {};
 	const days = {};
-	axios.get("https://api.openweathermap.org/data/2.5/forecast?id=658226&appid=433d4e8a404bcfc906fd28bed3a75f60")
+	axios.get("https://api.openweathermap.org/data/2.5/forecast?id=" + ids[id] + "&appid=433d4e8a404bcfc906fd28bed3a75f60")
 	.then(resp2 => {
 		const forecastList = resp2.data.list;
 		async.each(forecastList, (forecast, callback) => {
@@ -76,8 +81,6 @@ app.get("/forecast/:id", (req, resp) => {
 				resp.send(JSON.stringify(DATA));
 			});
 
-			/*resp.setHeader('Content-Type', 'application/json');
-			resp.send(JSON.stringify(data));*/
 		});
 	})
 	.catch(error => {

@@ -2,6 +2,7 @@ class App extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
+			data: this.props.data,
 			chartData: this.props.data[0]
 		};
 	}
@@ -11,15 +12,35 @@ class App extends React.Component {
 		this.setState({chartData: data});
 	}
 
+	getData = location => {
+		const value = location;
+		fetch("/forecast/" + value).then(resp => resp.json())
+		.then(data => {
+
+			const DATA = [];
+			Object.keys(data).forEach((key, index) => {
+				const newObj = data[key];
+				newObj.day = getWeekDay(key);
+				DATA.push(newObj);
+			});
+
+			this.setState({data: DATA, chartData: DATA[0]});
+		})
+		.catch(error => {
+			console.log(error);
+		})
+	}
+
 	render(){
 
 		const days = [];
-		this.props.data.forEach((day, index) => {
+		this.state.data.forEach((day, index) => {
 			days.push(<Day data={day} setSelectedDay={this.setSelectedDay} />);
 		});
 
 		return (
 			<div>
+				<TopPart setData={this.getData} />
 				{days}
 				<ChartComponent data={this.state.chartData}/>
 			</div>
@@ -28,13 +49,40 @@ class App extends React.Component {
 };
 
 
+class TopPart extends React.Component {
+	constructor(props){
+		super(props);
+	}
+
+	handleClick = e => {
+		this.props.setData(e.target.value);
+	}
+
+	render() {
+		return (
+			<div className="selectArea">
+				<h1 className="title">React.js Weather App</h1>
+
+				<p className="selectLabel">Select location: </p>
+				<select className="select" onChange={this.handleClick}>
+					<option value="Helsinki">Helsinki</option>
+					<option value="Los Angeles">Los Angeles</option>
+					<option value="Dubai">Dubai</option>
+					<option value="Tokyo">Tokyo</option>
+					<option value="Barcelona">Barcelona</option>
+				</select>
+			</div>
+		)
+	}
+}
+
+
 class Day extends React.Component {
 	constructor(props){
 		super(props);
 	}
 
 	handleClick = () => {
-		console.log("clicked");
 		this.props.setSelectedDay(this.props.data);
 	}
 
@@ -56,7 +104,8 @@ class ChartComponent extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			forecastData: this.props.data.forecast
+			forecastData: this.props.data.forecast,
+			chart: null
 		}
 	}
 
@@ -77,7 +126,8 @@ class ChartComponent extends React.Component {
 
         const data = [];
         const propsData = this.props.data.forecast;
-        const keys = Object.keys(propsData).sort((a,b)=>parseInt(a) > parseInt(b))
+        const keys = Object.keys(propsData).sort((a,b) => parseInt(a) > parseInt(b));
+
         keys.forEach((key, index) => {
         	data.push({x: parseInt(key), y: propsData[key].temperature});
         });
@@ -93,7 +143,7 @@ class ChartComponent extends React.Component {
 	        		pointRadius: 4,
 	        		pointHitRadius: 8,
 	        		pointBackgroundColor: "blue",
-	        		label: "Temperature (&deg;C)",
+	        		label: "Temperature (°C)",
 	        		cubicInterpolationMode: "monotone"
 	        	}]
         	},
@@ -109,7 +159,15 @@ class ChartComponent extends React.Component {
         	}
         };
 
-        const chart = new Chart(ctx, config);
+        if (this.state.chart === null){
+        	let chart = new Chart(ctx, config);
+        	this.setState({chart: chart});
+        	return;
+        }
+        this.state.chart.data.datasets[0].data = data;
+        this.state.chart.data.labels = keys;
+
+        this.state.chart.update();
     }
 
 	render(){
@@ -125,7 +183,7 @@ class ChartComponent extends React.Component {
 };
 
 
-/*const DATA = [
+const initDATA = [
 	{day: "Monday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
 	{day: "Tuesday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
 	{day: "Wednesday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
@@ -133,26 +191,32 @@ class ChartComponent extends React.Component {
 	{day: "Friday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
 	{day: "Saturday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
 	{day: "Sunday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-];*/
-const id = "123";
-fetch("/forecast/" + id).then(resp => resp.json())
-.then(data => {
+];
 
-	const DATA = [];
-	Object.keys(data).forEach((key, index) => {
-		const newObj = data[key];
-		newObj.day = getWeekDay(key);
-		DATA.push(newObj);
-	});
+const id = "Helsinki";
+function init(id){
 
-	ReactDOM.render(
-		<App data={DATA} />,
-		document.getElementById("app")
-	);
-})
-.catch(error => {
-	console.log(error);
-})
+	fetch("/forecast/" + id).then(resp => resp.json())
+	.then(data => {
+
+		const DATA = [];
+		Object.keys(data).forEach((key, index) => {
+			const newObj = data[key];
+			newObj.day = getWeekDay(key);
+			DATA.push(newObj);
+		});
+
+		ReactDOM.render(
+			<App data={DATA} />,
+			document.getElementById("app")
+		);
+	})
+	.catch(error => {
+		console.log(error);
+	})
+}
+
+init(id);
 
 /*ReactDOM.render(
 	<App data={DATA} />,

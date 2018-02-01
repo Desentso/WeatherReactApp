@@ -6,8 +6,46 @@ body, html {
 	font-family: "Roboto";
 }
 
+
+
+.selectArea {
+	display: block;
+	background-color: #ddd;
+	border-radius: 3px;
+	padding: 30px;
+	width: calc(100% - 104px);
+	margin-left: 22px;
+	margin-top: 22px;
+}
+
+.title {
+	font-size: 30px;
+	margin: 0;
+}
+
+.selectLabel {
+	display: inline-block;
+	margin: 0;
+	margin-top: 20px;
+	margin-right: 10px;
+}
+
+.select {
+	display: inline-block;
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid #333;
+	font-size: 18px;
+}
+
+.select:focus {
+	outline: none;
+}
+
+
+
 .Day {
-	width: calc(14% - 60px);
+	width: calc(16% - 60px);
 	padding: 20px;
 	margin-left: 22px;
 	margin-top: 22px;
@@ -16,6 +54,8 @@ body, html {
 	border-radius: 3px;
 }
 
+
+
 .Chart {
-	height: 300px;
+	margin-left: 22px;
 }
