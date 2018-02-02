@@ -8,7 +8,6 @@ class App extends React.Component {
 	}
 
 	setSelectedDay = data => {
-		console.log("clicked APP");
 		this.setState({chartData: data});
 	}
 
@@ -28,20 +27,21 @@ class App extends React.Component {
 		})
 		.catch(error => {
 			console.log(error);
+			this.setState({data: initDATA, chartData: initDATA[0]});
 		})
 	}
 
 	render(){
 
-		const days = [];
+		const dayComponents = [];
 		this.state.data.forEach((day, index) => {
-			days.push(<Day data={day} setSelectedDay={this.setSelectedDay} />);
+			dayComponents.push(<Day data={day} setSelectedDay={this.setSelectedDay} />);
 		});
 
 		return (
 			<div>
 				<TopPart setData={this.getData} />
-				{days}
+				{dayComponents}
 				<ChartComponent data={this.state.chartData}/>
 			</div>
 		)
@@ -54,7 +54,7 @@ class TopPart extends React.Component {
 		super(props);
 	}
 
-	handleClick = e => {
+	locationChanged = e => {
 		this.props.setData(e.target.value);
 	}
 
@@ -63,8 +63,8 @@ class TopPart extends React.Component {
 			<div className="selectArea">
 				<h1 className="title">React.js Weather App</h1>
 
-				<p className="selectLabel">Select location: </p>
-				<select className="select" onChange={this.handleClick}>
+				<p className="selectLabel">Select a location: </p>
+				<select className="select" onChange={this.locationChanged}>
 					<option value="Helsinki">Helsinki</option>
 					<option value="Los Angeles">Los Angeles</option>
 					<option value="Dubai">Dubai</option>
@@ -166,6 +166,7 @@ class ChartComponent extends React.Component {
         	this.setState({chart: chart});
         	return;
         }
+
         this.state.chart.data.datasets[0].data = data;
         this.state.chart.data.labels = keys;
 
@@ -187,12 +188,12 @@ class ChartComponent extends React.Component {
 
 
 const initDATA = [
-	{day: "Monday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
-	{day: "Tuesday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
-	{day: "Wednesday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
-	{day: "Thursday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
-	{day: "Friday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
-	{day: "Saturday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"}
+	{day: "Monday", temperature: "-", maxTemperature: "-", minTemperature: "-", weatherIconUrl: "#"},
+	{day: "Tuesday", temperature: "-", maxTemperature: "-", minTemperature: "-", weatherIconUrl: "#"},
+	{day: "Wednesday", temperature: "-", maxTemperature: "-", minTemperature: "-", weatherIconUrl: "#"},
+	{day: "Thursday", temperature: "-", maxTemperature: "-", minTemperature: "-", weatherIconUrl: "#"},
+	{day: "Friday", temperature: "-", maxTemperature: "-", minTemperature: "-", weatherIconUrl: "#"},
+	{day: "Saturday", temperature: "-", maxTemperature: "-", minTemperature: "-", weatherIconUrl: "#"}
 ];
 
 
