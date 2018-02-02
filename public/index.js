@@ -92,8 +92,10 @@ class Day extends React.Component {
 				<h2 className="dayTitle">{this.props.data.day}</h2>
 				<img className="icon" src={this.props.data.weatherIconUrl} />
 				<p className="temp">{this.props.data.temperature} &deg;C</p>
-				<p className="maxTemp">Max: {this.props.data.maxTemperature} &deg;C</p>
-				<p className="minTemp">Min: {this.props.data.minTemperature} &deg;C</p>
+				<div>
+					<p className="maxTemp">Max: {this.props.data.maxTemperature} &deg;C</p>
+					<p className="minTemp">Min: {this.props.data.minTemperature} &deg;C</p>
+				</div>
 			</div>
 		)
 	}
@@ -121,8 +123,8 @@ class ChartComponent extends React.Component {
         const elem = ReactDOM.findDOMNode(this.refs.chart);
         const ctx = elem.getContext("2d");
 
-        ctx.canvas.width = 500;
-		ctx.canvas.height = 250;
+        ctx.canvas.width = 600;
+		ctx.canvas.height = 300;
 
         const data = [];
         const propsData = this.props.data.forecast;
@@ -176,6 +178,7 @@ class ChartComponent extends React.Component {
 
 		return (
 			<div className="Chart">
+				<h2 className="chartTitle">{this.props.data.day}</h2>	
 				<canvas ref="chart"></canvas>
 			</div>
 		)
@@ -184,16 +187,15 @@ class ChartComponent extends React.Component {
 
 
 const initDATA = [
-	{day: "Monday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-	{day: "Tuesday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-	{day: "Wednesday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-	{day: "Thursday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-	{day: "Friday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-	{day: "Saturday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
-	{day: "Sunday", temperature: 15, maxTemperature: 18, minTemperature: 14, icon: "#"},
+	{day: "Monday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
+	{day: "Tuesday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
+	{day: "Wednesday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
+	{day: "Thursday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
+	{day: "Friday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"},
+	{day: "Saturday", temperature: "-", maxTemperature: "-", minTemperature: "-", icon: "#"}
 ];
 
-const id = "Helsinki";
+
 function init(id){
 
 	fetch("/forecast/" + id).then(resp => resp.json())
@@ -213,15 +215,16 @@ function init(id){
 	})
 	.catch(error => {
 		console.log(error);
+		ReactDOM.render(
+			<App data={initDATA} />,
+			document.getElementById("app")
+		);
 	})
 }
 
+const id = "Helsinki";
 init(id);
 
-/*ReactDOM.render(
-	<App data={DATA} />,
-	document.getElementById("app")
-);*/
 
 function getWeekDay(dateStr) {
 	const date = new Date(dateStr);

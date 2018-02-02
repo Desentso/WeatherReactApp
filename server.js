@@ -38,25 +38,26 @@ app.get("/forecast/:id", (req, resp) => {
 
 			const day = forecast.dt_txt.slice(0,10);
 			const hour = forecast.dt_txt.slice(11,13);
+			//console.log(day, hour);
 
-			if (days.hasOwnProperty(day)) {
-
-				const maxTemp = toCelsius(forecast.main.temp_max);
-				const minTemp = toCelsius(forecast.main.temp_min);
-				const temp = toCelsius(forecast.main.temp);
-
-				days[day].forecast[hour] = {
-						temperature: temp,
-						maxTemperature: maxTemp,
-						minTemperature: minTemp,
-						weatherDescription: forecast.weather[0].description,
-						weatherIconUrl: "https://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png"
-					}
-				days[day].temps = days[day].temps.concat([temp, maxTemp, minTemp]);
-			} else {
-				//data[day] = {};
+			if (!days.hasOwnProperty(day)) {
 				days[day] = {temps: [], forecast: {}};
-			}
+			};
+
+			//console.log(day, hour);
+			const maxTemp = toCelsius(forecast.main.temp_max);
+			const minTemp = toCelsius(forecast.main.temp_min);
+			const temp = toCelsius(forecast.main.temp);
+
+			days[day].forecast[hour] = {
+					temperature: temp,
+					maxTemperature: maxTemp,
+					minTemperature: minTemp,
+					weatherDescription: forecast.weather[0].description,
+					weatherIconUrl: "https://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png"
+				}
+			days[day].temps = days[day].temps.concat([temp, maxTemp, minTemp]);
+			//console.log(days[day].forecast[hour]);
 
 			callback(null);
 		}, () => {
@@ -64,7 +65,7 @@ app.get("/forecast/:id", (req, resp) => {
 			async.each(Object.keys(days), (day, callback2) => {
 
 				let middle = Math.floor((Object.keys(days[day].forecast).length) / 2);
-				middle = Object.keys(days[day].forecast).sort((a,b)=>parseInt(a) > parseInt(b))[middle];
+				middle = Object.keys(days[day].forecast).sort((a,b) => parseInt(a) > parseInt(b))[middle];
 
 				days[day].maxTemperature = Math.max.apply(null, days[day].temps);
 				days[day].minTemperature = Math.min.apply(null, days[day].temps);
@@ -76,7 +77,7 @@ app.get("/forecast/:id", (req, resp) => {
 			}, () => {
 
 				const DATA = days;//{forecastByDayAndHour: data, forecastByDay: days};
-
+				//console.log(DATA);
 				resp.setHeader('Content-Type', 'application/json');
 				resp.send(JSON.stringify(DATA));
 			});
